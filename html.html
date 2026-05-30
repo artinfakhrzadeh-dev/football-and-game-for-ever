@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>آماده‌سازی متن برای بله</title>
+  <style>
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #fff9c4); /* تم رنگی ملایم */
+      margin: 0;
+      padding: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* کل ارتفاع صفحه */
+      direction: rtl;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      width: 100%;
+      max-width: 750px; /* حداکثر عرض کانتینر */
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 25px;
+      font-size: 28px;
+    }
+
+    textarea {
+      width: calc(100% - 24px); /* کمی کمتر از 100% برای پدینگ */
+      height: 200px;
+      padding: 12px;
+      font-size: 18px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      resize: vertical; /* فقط عمودی */
+      outline: none;
+      box-sizing: border-box; /* برای در نظر گرفتن پدینگ و حاشیه در عرض */
+      margin-bottom: 15px;
+    }
+
+    textarea:focus {
+      border-color: #4CAF50; /* سبز روشن هنگام فوکوس */
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center; /* دکمه‌ها در وسط */
+      gap: 15px; /* فاصله بین دکمه‌ها */
+      flex-wrap: wrap; /* در صورت کمبود جا، به خط بعدی بروند */
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 17px;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .copy-btn {
+      background: #FF9800; /* نارنجی */
+    }
+
+    .copy-btn:hover {
+      background: #f57c00;
+    }
+
+    .send-btn {
+      background: #2196F3; /* آبی */
+    }
+
+    .send-btn:hover {
+      background: #1976D2;
+    }
+
+    .clear-btn {
+      background: #f44336; /* قرمز */
+    }
+
+    .clear-btn:hover {
+      background: #d32f2f;
+    }
+
+    .help-text {
+      font-size: 14px;
+      color: #666;
+      margin-top: 10px; /* کمی فاصله بیشتر */
+      line-height: 1.6; /* فاصله بین خطوط */
+    }
+
+    /* استایل برای لینک‌ها */
+    .link-section {
+      margin-top: 25px;
+      display: flex;
+      flex-direction: column; /* چیدمان ستونی */
+      align-items: center; /* وسط‌چین */
+      gap: 10px; /* فاصله بین لینک‌ها */
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #333;
+      text-decoration: none;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+
+    .link-item:hover {
+      color: #4CAF50; /* تغییر رنگ در حالت هاور */
+    }
+
+    .link-icon { /* آیکون کوچک کنار لینک */
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>متن خود را برای ارسال آماده کنید</h1>
+
+    <textarea id="textInput" placeholder="متن خود را اینجا بنویسید..."></textarea>
+
+    <div class="buttons">
+      <button class="copy-btn" onclick="copyText()">کپی متن</button>
+      <button class="send-btn" onclick="showAlertForBale()">آماده برای ارسال در بله</button>
+      <button class="clear-btn" onclick="clearText()">پاک کردن</button>
+    </div>
+
+    <div class="help-text">
+      پس از کلیک روی "کپی متن"، متن در حافظه شما ذخیره می‌شود. سپس به برنامه بله بروید، یک چت را باز کنید و متن را بچسبانید (Paste).
+    </div>
+
+    <!-- بخش جدید برای لینک‌ها -->
+    <div class="link-section">
+      <a href="https://web.bale.ai/chat?uid=1778253532" target="_blank" class="link-item">
+        <img src="https://img.icons8.com/ios-filled/16/facebook-messenger.png" alt="آیکون چت بله" class="link-icon">
+        چت با آرتین
+      </a>
+      <a href="https://web.bale.ai/profile?uid=952769867" target="_blank" class="link-item">
+        <img src="https://img.icons8.com/ios-filled/16/user.png" alt="آیکون پروفایل بله" class="link-icon">
+        پروفایل بنیامین
+      </a>
+    </div>
+    <!-- پایان بخش لینک‌ها -->
+
+  </div>
+
+  <script>
+    const textInput = document.getElementById("textInput");
+    const copyButton = document.querySelector(".copy-btn");
+    const sendButton = document.querySelector(".send-btn");
+
+    // بارگذاری متن ذخیره شده قبلی (اختیاری)
+    window.onload = () => {
+      const savedText = localStorage.getItem("myDraftText");
+      if (savedText) {
+        textInput.value = savedText;
+      }
+    };
+
+    function copyText() {
+      const textToCopy = textInput.value;
+      if (!textToCopy) {
+        alert("هیچ متنی برای کپی کردن وجود ندارد.");
+        return;
+      }
+
+      // استفاده از Clipboard API برای کپی کردن
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        alert("متن کپی شد! حالا می‌توانید آن را در بله بچسبانید.");
+        // ذخیره متن در localStorage برای بارگذاری مجدد
+        localStorage.setItem("myDraftText", textToCopy);
+      }).catch(err => {
+        console.error("خطا در کپی کردن متن: ", err);
+        alert("متاسفانه کپی کردن انجام نشد. لطفاً متن را دستی انتخاب و کپی کنید.");
+      });
+    }
+
+    function showAlertForBale() {
+      const textToSend = textInput.value;
+      if (!textToSend) {
+        alert("لطفاً ابتدا متنی بنویسید.");
+        return;
+      }
+      alert("متن آماده است! اکنون به برنامه بله بروید، متن را کپی کرده و در چت مورد نظر بچسبانید.");
+      // در اینجا هم متن را ذخیره می‌کنیم تا اگر کاربر بعداً برگشت، متن را داشته باشد
+      localStorage.setItem("myDraftText", textToSend);
+    }
+
+    function clearText() {
+      textInput.value = "";
+      localStorage.removeItem("myDraftText"); // پاک کردن متن ذخیره شده
+      alert("متن پاک شد.");
+    }
+  </script>
+
+</body>
+</html>
